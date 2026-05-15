@@ -7,11 +7,15 @@ import {
   WarningOutlined,
   ReloadOutlined,
   ArrowLeftOutlined,
+  BookOutlined,
+  HistoryOutlined,
 } from '@ant-design/icons';
 import { useSWRConfig } from 'swr';
 import { OverviewView } from '../components/overview/OverviewView';
 import { RoadmapView } from '../components/roadmap/RoadmapView';
 import { RisksView } from '../components/risks/RisksView';
+import { KnowledgeView } from '../components/knowledge/KnowledgeView';
+import { ActivityView } from '../components/activity/ActivityView';
 import type { Tab } from '../lib/constants';
 
 const { Sider, Content } = Layout;
@@ -19,7 +23,9 @@ const { Sider, Content } = Layout;
 const TAB_TITLES: Record<Tab, string> = {
   overview: '概览',
   roadmap: '路线图',
+  knowledge: '知识',
   risks: '风险',
+  activity: '活动',
 };
 
 export function ProjectDetailPage() {
@@ -75,7 +81,9 @@ export function ProjectDetailPage() {
           items={[
             { key: 'overview', icon: <DashboardOutlined style={{ fontSize: 18 }} />, label: '概览' },
             { key: 'roadmap', icon: <NodeIndexOutlined style={{ fontSize: 18 }} />, label: '路线图' },
+            { key: 'knowledge', icon: <BookOutlined style={{ fontSize: 18 }} />, label: '知识' },
             { key: 'risks', icon: <WarningOutlined style={{ fontSize: 18 }} />, label: '风险' },
+            { key: 'activity', icon: <HistoryOutlined style={{ fontSize: 18 }} />, label: '活动' },
           ]}
         />
       </Sider>
@@ -99,7 +107,9 @@ export function ProjectDetailPage() {
         <Content style={{ padding: 32, overflow: 'auto' }}>
           {activeTab === 'overview' && <OverviewView slug={slug!} />}
           {activeTab === 'roadmap' && <RoadmapView slug={slug!} />}
+          {activeTab === 'knowledge' && <KnowledgeView slug={slug!} />}
           {activeTab === 'risks' && <RisksView slug={slug!} />}
+          {activeTab === 'activity' && <ActivityView slug={slug!} />}
         </Content>
       </Layout>
     </Layout>

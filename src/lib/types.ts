@@ -111,3 +111,24 @@ export interface StaleResponse {
   cutoffDate: string;
   days: number;
 }
+
+export interface KnowledgeMapResponse {
+  knowledge: CognitiveNode[];
+  byDomain: Record<string, CognitiveNode[]>;
+}
+
+export interface EventRecord {
+  id: string;
+  timestamp: string;
+  eventType: string;
+  actor: string;
+  operation: string;
+  nodeId: string | null;
+  nodeType: string | null;
+  payload: Record<string, unknown>;
+  context: string | null;
+}
+
+export interface ActivityResponse {
+  events: EventRecord[];
+}

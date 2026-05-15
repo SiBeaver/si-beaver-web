@@ -34,6 +34,8 @@ import type {
   ProjectState,
   StaleResponse,
   GoalProgressResponse,
+  KnowledgeMapResponse,
+  ActivityResponse,
 } from '../lib/types';
 
 export function fetchRoadmap(slug: string, includeCompleted = true, maxDepth = 5) {
@@ -58,4 +60,17 @@ export function fetchStale(slug: string, days = 7) {
 
 export function fetchGoalProgress(slug: string) {
   return get<GoalProgressResponse>(`/api/v1/projects/${slug}/goals/progress`);
+}
+
+export function fetchKnowledgeMap(slug: string, domain?: string) {
+  const params = domain ? `?domain=${encodeURIComponent(domain)}` : '';
+  return get<KnowledgeMapResponse>(`/api/v1/projects/${slug}/knowledge${params}`);
+}
+
+export function fetchActivity(slug: string, limit = 50) {
+  return get<ActivityResponse>(`/api/v1/projects/${slug}/activity?limit=${limit}`);
+}
+
+export function fetchFullTextSearch(slug: string, query: string) {
+  return get<{ results: import('../lib/types').CognitiveNode[] }>(`/api/v1/projects/${slug}/fts?q=${encodeURIComponent(query)}`);
 }
