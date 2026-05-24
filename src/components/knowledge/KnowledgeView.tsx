@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Collapse, Tag, Typography, Skeleton, Alert, Input, theme, Space } from 'antd';
+import { Collapse, Tag, Typography, Skeleton, Alert, Input, theme, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useKnowledgeMap } from '../../hooks/useKnowledgeMap';
 import { StatusBadge } from '../shared/StatusBadge';

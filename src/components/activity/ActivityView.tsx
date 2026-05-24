@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Timeline, Card, Typography, Skeleton, Alert, Tag, Select, theme } from 'antd';
+import { Timeline, Card, Typography, Skeleton, Alert, Select } from 'antd';
 import { useActivity } from '../../hooks/useActivity';
 import { NodeTypeBadge } from '../shared/NodeTypeBadge';
 import { EmptyState } from '../shared/EmptyState';
@@ -82,7 +82,6 @@ const NODE_TYPE_OPTIONS = Object.entries(NODE_TYPE_LABELS).map(([value, label]) 
 export function ActivityView({ slug }: { slug: string }) {
   const { data, error, isLoading } = useActivity(slug, 100);
   const [filter, setFilter] = useState<string | undefined>(undefined);
-  const { token } = theme.useToken();
 
   const filteredEvents = useMemo(() => {
     if (!data?.events) return [];
