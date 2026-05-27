@@ -7,6 +7,7 @@ import type { RoadmapItem } from '../../lib/types';
 interface GoalTreeNodeProps {
   item: RoadmapItem;
   depth?: number;
+  onContextClick?: (nodeId: string) => void;
 }
 
 const BORDER_COLORS: Record<string, [string, string]> = {
@@ -20,7 +21,7 @@ const BORDER_COLORS: Record<string, [string, string]> = {
   geekblue: ['#2563eb', '#60a5fa'],
 };
 
-export function GoalTreeNode({ item, depth = 0 }: GoalTreeNodeProps) {
+export function GoalTreeNode({ item, depth = 0, onContextClick }: GoalTreeNodeProps) {
   const [expanded, setExpanded] = useState(depth < 1);
   const { token } = theme.useToken();
   const isDark = token.colorBgLayout === '#1a1a1a';
@@ -40,11 +41,12 @@ export function GoalTreeNode({ item, depth = 0 }: GoalTreeNodeProps) {
         hasChildren={item.children.length > 0}
         expanded={expanded}
         onToggle={() => setExpanded(!expanded)}
+        onContextClick={onContextClick ? () => onContextClick(item.node.id) : undefined}
       />
       {expanded && item.children.length > 0 && (
         <div>
           {item.children.map(child => (
-            <GoalTreeNode key={child.node.id} item={child} depth={depth + 1} />
+            <GoalTreeNode key={child.node.id} item={child} depth={depth + 1} onContextClick={onContextClick} />
           ))}
         </div>
       )}

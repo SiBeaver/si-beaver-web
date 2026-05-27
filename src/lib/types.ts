@@ -132,3 +132,19 @@ export interface EventRecord {
 export interface ActivityResponse {
   events: EventRecord[];
 }
+
+export interface SemanticEdge {
+  id: string;
+  source_id: string;
+  target_id: string;
+  relation: string;
+  annotation: string | null;
+  createdAt: string;
+}
+
+export interface NodeContext {
+  node: CognitiveNode;
+  edges: SemanticEdge[];
+  neighbors: CognitiveNode[];
+  events: EventRecord[];
+}

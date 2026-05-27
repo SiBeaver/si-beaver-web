@@ -14,11 +14,20 @@ interface GoalCardProps {
   hasChildren: boolean;
   expanded: boolean;
   onToggle: () => void;
+  onContextClick?: () => void;
 }
 
-export function GoalCard({ node, progress, hasChildren, expanded, onToggle }: GoalCardProps) {
+export function GoalCard({ node, progress, hasChildren, expanded, onToggle, onContextClick }: GoalCardProps) {
   const [showDetail, setShowDetail] = useState(false);
   const { token } = theme.useToken();
+
+  const handleClick = () => {
+    if (onContextClick) {
+      onContextClick();
+    } else {
+      setShowDetail(!showDetail);
+    }
+  };
 
   return (
     <div style={{ marginBottom: 2 }}>
@@ -32,7 +41,7 @@ export function GoalCard({ node, progress, hasChildren, expanded, onToggle }: Go
           cursor: 'pointer',
           transition: 'background 0.15s',
         }}
-        onClick={() => setShowDetail(!showDetail)}
+        onClick={handleClick}
         onMouseEnter={(e) => (e.currentTarget.style.background = token.colorFillQuaternary)}
         onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
       >

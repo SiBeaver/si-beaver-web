@@ -1,45 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout, Menu, Typography, Button, theme } from 'antd';
 import {
-  DashboardOutlined,
-  NodeIndexOutlined,
-  WarningOutlined,
+  InfoCircleOutlined,
+  BuildOutlined,
+  FlagOutlined,
+  UnorderedListOutlined,
+  QuestionCircleOutlined,
   ReloadOutlined,
   ArrowLeftOutlined,
-  BookOutlined,
-  HistoryOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 import { useSWRConfig } from 'swr';
-import { OverviewView } from '../components/overview/OverviewView';
-import { RoadmapView } from '../components/roadmap/RoadmapView';
-import { RisksView } from '../components/risks/RisksView';
-import { KnowledgeView } from '../components/knowledge/KnowledgeView';
-import { ActivityView } from '../components/activity/ActivityView';
-import type { Tab } from '../lib/constants';
+import { WhatView } from '../components/what/WhatView';
+import { DesignView } from '../components/design/DesignView';
+import { GoalsView } from '../components/goals/GoalsView';
+import { TasksView } from '../components/tasks/TasksView';
+import { HowtoView } from '../components/howto/HowtoView';
+import { clearToken } from '../lib/auth';
+import type { Tab, LegacyTab } from '../lib/constants';
+import { LEGACY_TO_NEW } from '../lib/constants';
 
 const { Sider, Content } = Layout;
 
 const TAB_TITLES: Record<Tab, string> = {
-  overview: '概览',
-  roadmap: '路线图',
-  knowledge: '知识',
-  risks: '风险',
-  activity: '活动',
+  what: '是什么',
+  design: '设计',
+  goals: '目标',
+  tasks: '任务',
+  howto: '怎么用',
 };
 
 export function ProjectDetailPage() {
   const { slug, tab } = useParams<{ slug: string; tab: string }>();
-  const activeTab = (tab as Tab) || 'overview';
+  const activeTab = (tab as Tab) || 'what';
   const navigate = useNavigate();
   const { mutate } = useSWRConfig();
   const [spinning, setSpinning] = useState(false);
   const { token } = theme.useToken();
 
+  // redirect legacy tab URLs
+  useEffect(() => {
+    const legacy = LEGACY_TO_NEW[tab as LegacyTab];
+    if (legacy) {
+      navigate(`/projects/${slug}/${legacy}`, { replace: true });
+    }
+  }, [tab, slug, navigate]);
+
   const handleRefresh = () => {
     setSpinning(true);
     mutate(() => true, undefined, { revalidate: true });
     setTimeout(() => setSpinning(false), 600);
+  };
+
+  const handleLogout = () => {
+    clearToken();
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -79,13 +95,31 @@ export function ProjectDetailPage() {
           onSelect={({ key }) => navigate(`/projects/${slug}/${key}`)}
           style={{ border: 'none', background: 'transparent' }}
           items={[
-            { key: 'overview', icon: <DashboardOutlined style={{ fontSize: 18 }} />, label: '概览' },
-            { key: 'roadmap', icon: <NodeIndexOutlined style={{ fontSize: 18 }} />, label: '路线图' },
-            { key: 'knowledge', icon: <BookOutlined style={{ fontSize: 18 }} />, label: '知识' },
-            { key: 'risks', icon: <WarningOutlined style={{ fontSize: 18 }} />, label: '风险' },
-            { key: 'activity', icon: <HistoryOutlined style={{ fontSize: 18 }} />, label: '活动' },
+            { key: 'what', icon: <InfoCircleOutlined style={{ fontSize: 18 }} />, label: '是什么' },
+            { key: 'design', icon: <BuildOutlined style={{ fontSize: 18 }} />, label: '设计' },
+            { key: 'goals', icon: <FlagOutlined style={{ fontSize: 18 }} />, label: '目标' },
+            { key: 'tasks', icon: <UnorderedListOutlined style={{ fontSize: 18 }} />, label: '任务' },
+            { key: 'howto', icon: <QuestionCircleOutlined style={{ fontSize: 18 }} />, label: '怎么用' },
           ]}
         />
+        <div style={{ flex: 1 }} />
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 8,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 20,
+            cursor: 'pointer',
+            color: token.colorTextSecondary,
+          }}
+          onClick={handleLogout}
+          title="登出"
+        >
+          <LogoutOutlined style={{ fontSize: 16 }} />
+        </div>
       </Sider>
       <Layout style={{ background: token.colorBgLayout }}>
         <div style={{
@@ -105,11 +139,11 @@ export function ProjectDetailPage() {
           />
         </div>
         <Content style={{ padding: 32, overflow: 'auto' }}>
-          {activeTab === 'overview' && <OverviewView slug={slug!} />}
-          {activeTab === 'roadmap' && <RoadmapView slug={slug!} />}
-          {activeTab === 'knowledge' && <KnowledgeView slug={slug!} />}
-          {activeTab === 'risks' && <RisksView slug={slug!} />}
-          {activeTab === 'activity' && <ActivityView slug={slug!} />}
+          {activeTab === 'what' && <WhatView slug={slug!} />}
+          {activeTab === 'design' && <DesignView slug={slug!} />}
+          {activeTab === 'goals' && <GoalsView slug={slug!} />}
+          {activeTab === 'tasks' && <TasksView slug={slug!} />}
+          {activeTab === 'howto' && <HowtoView slug={slug!} />}
         </Content>
       </Layout>
     </Layout>

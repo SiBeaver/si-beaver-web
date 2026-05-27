@@ -3,7 +3,12 @@ import { useRoadmap } from '../../hooks/useRoadmap';
 import { GoalTreeNode } from './GoalTreeNode';
 import { EmptyState } from '../shared/EmptyState';
 
-export function RoadmapView({ slug }: { slug: string }) {
+interface Props {
+  slug: string;
+  onContextClick?: (nodeId: string) => void;
+}
+
+export function RoadmapView({ slug, onContextClick }: Props) {
   const { data, error, isLoading } = useRoadmap(slug);
 
   if (isLoading) return <Skeleton active paragraph={{ rows: 6 }} />;
@@ -16,7 +21,7 @@ export function RoadmapView({ slug }: { slug: string }) {
   return (
     <div style={{ maxWidth: 960 }}>
       {data.roadmap.map(item => (
-        <GoalTreeNode key={item.node.id} item={item} />
+        <GoalTreeNode key={item.node.id} item={item} onContextClick={onContextClick} />
       ))}
     </div>
   );
