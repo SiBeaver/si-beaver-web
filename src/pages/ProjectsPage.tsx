@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Row, Col, Button, Empty, Spin, theme } from 'antd';
-import { PlusOutlined, FolderOutlined } from '@ant-design/icons';
+import { Card, Typography, Row, Col, Button, Empty, Spin, theme, Space } from 'antd';
+import { PlusOutlined, FolderOutlined, LogoutOutlined } from '@ant-design/icons';
 import useSWR from 'swr';
 import { fetchProjects } from '../api/client';
 import { CreateProjectModal } from '../components/projects/CreateProjectModal';
+import { clearToken } from '../lib/auth';
 import type { ProjectMeta } from '../lib/types';
 
 export function ProjectsPage() {
@@ -12,6 +13,11 @@ export function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const { token } = theme.useToken();
+
+  const handleLogout = () => {
+    clearToken();
+    navigate('/login', { replace: true });
+  };
 
   if (isLoading) {
     return (
@@ -29,9 +35,12 @@ export function ProjectsPage() {
             <Typography.Title level={3} style={{ margin: 0 }}>项目</Typography.Title>
             <Typography.Text type="secondary">选择一个项目以查看认知图谱</Typography.Text>
           </div>
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
-            新建项目
-          </Button>
+          <Space>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
+              新建项目
+            </Button>
+            <Button icon={<LogoutOutlined />} onClick={handleLogout}>登出</Button>
+          </Space>
         </div>
 
         {(!projects || projects.length === 0) ? (
